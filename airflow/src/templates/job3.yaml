@@ -1,0 +1,44 @@
+3_bq_examples:
+  default_args:
+    owner: ${PROJECT_ID}
+    start_date: 2019-08-10
+    catchup: 'False'  
+    timezone: 'Australia/Melbourne'   
+  schedule_interval:
+  description: 'This is job to demonstrate bigquery and s3 operators'
+  tasks:
+    bq_extract_one_day: 
+      operator: airflow.contrib.operators.bigquery_operator.BigQueryOperator
+      bql: 'sql/extract_day_transactions.sql'
+      destination_dataset_table: '${PROJECT_ID}.bitcoin_blockchain.transactions'
+      write_disposition: 'WRITE_TRUNCATE'
+      use_legacy_sql: False
+    bq2gcp_avro:
+      operator: airflow.contrib.operators.bigquery_to_gcs.BigQueryToCloudStorageOperator
+      source_project_dataset_table: '${PROJECT_ID}.bitcoin_blockchain.transactions'
+      destination_cloud_storage_uris : 
+        - 'gs://${PROJECT_ID}-storage/data/bitcoin/part-*.avro'
+      export_format: 'AVRO'
+      dependencies: [bq_extract_one_day]
+    gcs2bq_avro_auto_schema:
+      operator: airflow.contrib.operators.gcs_to_bq.GoogleCloudStorageToBigQueryOperator
+      bucket: '${PROJECT_ID}-storage'
+      source_objects:
+        - 'data/bitcoin/part-*'
+      destination_project_dataset_table: '${PROJECT_ID}.bitcoin_blockchain.avro_auto_schema'
+      source_format: 'AVRO'
+      create_disposition: 'CREATE_IF_NEEDED'
+      write_disposition: 'WRITE_TRUNCATE'
+      dependencies: [bq2gcp_avro]
+      autodetect: 'True'
+    gcs2bq_avro_with_schema:
+      operator: airflow.contrib.operators.gcs_to_bq.GoogleCloudStorageToBigQueryOperator
+      bucket: '${PROJECT_ID}-storage'
+      source_objects:
+        - 'data/bitcoin/part-*'
+      destination_project_dataset_table: '${PROJECT_ID}.bitcoin_blockchain.avro_with_schema'
+      source_format: 'AVRO'
+      schema_object: 'dags/schemas/transactions.json'
+      create_disposition: 'CREATE_IF_NEEDED'
+      write_disposition: 'WRITE_TRUNCATE'
+      dependencies: [bq2gcp_avro]    

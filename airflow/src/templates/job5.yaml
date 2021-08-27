@@ -1,0 +1,30 @@
+5_dataflow_dlp:
+  default_args:
+    owner: ${PROJECT_ID}
+    start_date: 2019-08-10
+    catchup: 'False'
+    timezone: 'Australia/Melbourne'
+  schedule_interval:
+  description: 'This is a dataflow job to mask data from ss storage to bq team'
+  tasks:
+    dataflow_dlp:
+      operator: airflow.contrib.operators.dataflow_operator.DataflowTemplateOperator
+      template: gs://dataflow-templates/latest/Stream_DLP_GCS_Text_to_BigQuery
+      parameters: 
+        inputFilePattern: 'gs://anz-uc-ss-storage/datasynth/output2/*.csv'
+        dlpProjectId: '${PROJECT_ID}'
+        deidentifyTemplateName: 'projects/${PROJECT_ID}/deidentifyTemplates/datasynth'
+        datasetName: 'team_dataset'
+        batchSize: '1000'
+      dataflow_default_options:
+        subnetwork: https://www.googleapis.com/compute/v1/projects/anz-uc-host/regions/australia-southeast1/subnetworks/${PROJECT_ID}-subnet
+        zone: australia-southeast1-b 
+        project: ${PROJECT_ID}
+        numWorkers: 1
+        maxWorkers: 1
+      labels:
+        task: dataflow_dlp
+      name: dataflow-dlp-pipeline
+      task_id: dataflow-dlp-pipeline
+      get_logs: True
+      execution_timeout:

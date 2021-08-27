@@ -1,0 +1,9 @@
+INFO  time: initialize in 0.26s
+WARN  no build tool detected in workspace '/Users/sai/git/anz-ic-team'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+Sep 01, 2019 12:20:14 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTraceNotification
+INFO  shutting down Metals
+INFO  time: initialize in 0.26s
+WARN  no build tool detected in workspace '/Users/sai/git/anz-ic-team'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+Sep 01, 2019 6:43:13 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTraceNotification

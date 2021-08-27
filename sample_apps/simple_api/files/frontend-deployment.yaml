@@ -1,0 +1,32 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: frontend
+  template:
+    metadata:
+      name: frontend
+      labels:
+        name: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: gcr.io/${PROJECT_ID}/frontend:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          env:
+          - name: PROJECT_ID
+            value: ${PROJECT_ID}
+          - name: API_URL
+            value: http://${PROJECT_ID}-api.lab.kasna.cloud

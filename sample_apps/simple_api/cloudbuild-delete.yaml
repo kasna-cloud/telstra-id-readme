@@ -1,0 +1,31 @@
+---
+steps:
+
+- id: delete service
+  name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - 'delete'
+  - '-f'
+  - 'service.yaml'
+  - '-n'
+  - 'app'
+  - '--ignore-not-found'  
+  env:
+  - 'CLOUDSDK_COMPUTE_REGION=australia-southeast1'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${PROJECT_ID}-gke'
+  - 'GCLOUD_PROJECT=${PROJECT_ID}'
+
+- id: delete deployment
+  name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - 'delete'
+  - '-f'
+  - 'deployment.yaml'
+  - '-n'
+  - 'app'
+  - '--ignore-not-found'  
+  env:
+  - 'CLOUDSDK_COMPUTE_REGION=australia-southeast1'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${PROJECT_ID}-gke'
+  - 'GCLOUD_PROJECT=${PROJECT_ID}'
+       

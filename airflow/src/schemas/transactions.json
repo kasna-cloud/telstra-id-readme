@@ -1,0 +1,7 @@
+[
+    {"name": "trans_time", "type": "TIMESTAMP", "mode": "NULLABLE"},
+    {"name": "transaction_id", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "block_id", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "previous_block", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "merkle_root", "type": "STRING", "mode": "NULLABLE"}
+]
