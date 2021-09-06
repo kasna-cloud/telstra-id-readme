@@ -10,6 +10,7 @@ To use this repo locally to deploy things to your team environment. Requires:
 Run `make` to see what you can do.
 
 ### Shared Resources
+- Google Cloud Pub/Sub https://gitlab.mantelgroup.com.au/kasna/customers/telstra-id/telstra-id-data-synth
 - Transaction topic: ```telstra-cde-ic-ss-kafka.lab.kasna.internal:9094, synth-topic``` 
 - Payment topic: ```telstra-cde-ic-ss-kafka.lab.kasna.internal:9094, payment-topic```
 - Storage bucket: ```gs://telstra-cde-ic-ss-storage```
@@ -18,8 +19,7 @@ Run `make` to see what you can do.
 - BigQuery accounts table: ```telstra-cde-ic-ss.sample.accounts```
 
 ### Team Resources
-- Juypterhub login: ```https://__ENVSUBST__PROJECT_ID__.lab.kasna.cloud```
-- Payment Services API: ```http://__ENVSUBST__PROJECT_ID__-pspapi.lab.kasna.cloud```
+- Juypterhub login: https://18779d6207599860-dot-us-central1.notebooks.googleusercontent.com/?authuser=0
 - Storage: ```gs://__ENVSUBST__PROJECT_ID__-storage/```
 - Git: ```gcloud source repos clone  --project=__ENVSUBST__PROJECT_ID__```
 - BigQuery dataset: ```__ENVSUBST__PROJECT_ID__.team_dataset```
@@ -55,6 +55,18 @@ A brief description of each component of this repo is below:
 * `notebooks` Jupyter notebooks for data exploration and examples 
 * `sample_app` Sample python app which can be deployed to GKE. This app connects to BigQuery or CloudSQL and renders a custerom.
 * `pipelines` CI and CD pipelines for team projects using cloudbuild
+
+# Cloud Run Boilerplates
+
+The Development Tech Domain also offers simple one-click deployments for hosting applications on managed Cloud Run.
+
+|Framework|Description|Deploy|
+|---|---|---|
+|[React.js](boilerplate-react)|React Sample|[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/gcloudan/boilerplates-cloudrun.git&dir=boilerplate-react)|
+|[Sapper.js](boilerplate-sapper)|Sapper Sample|[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/gcloudan/boilerplates-cloudrun.git&dir=boilerplate-sapper)|
+|[Svelte Kit](boilerplate-sveltekit)|Sveltekit with TailwindCSS|[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/gcloudan/boilerplates-cloudrun.git&dir=boilerplate-sveltekit)|
+|[Nuxt.js](boilerplate-nuxt)|Nuxt.js with TailwindCSS and TypeScript|[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/gcloudan/boilerplates-cloudrun.git&dir=boilerplate-nuxt)|
+|[Next.js](boilerplate-next)|Next.js with TailwindCSS|[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/gcloudan/boilerplates-cloudrun.git&dir=boilerplate-next)|
 
 ## Resources
 Additional information and resources are available at the links below:
