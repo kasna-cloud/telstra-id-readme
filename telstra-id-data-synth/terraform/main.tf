@@ -1,81 +1,69 @@
 # ----------------------------------------------------------------------------
 # Compute
 # ----------------------------------------------------------------------------
-resource "google_compute_instance" "default" {
-  project                   = var.project_id
-  name                      = "synth-compute"
-  machine_type              = "g1-small"
-  allow_stopping_for_update = true
-  zone                      = var.zone
+module "gce-container" {
+  source = "terraform-google-modules/container-vm/google"
+  version = "~> 2.0"
+
+  container = {
+    image="gcr.io/${var.project_id}/datasynth"
+    env = [
+      {
+        name = "PROJECT_ID"
+        value = var.project_id
+      },
+      {
+        name = "AUST_PUBSUB_TOPIC"
+        value = module.cdr_aust.topic
+      },
+      {
+        name = "INTL_PUBSUB_TOPIC"
+        value = module.cdr_intl.topic
+      },
+      {
+        name = "ALARM_PUBSUB_TOPIC"
+        value = module.alarm_synth.topic
+      }
+    ]
+  }
+  restart_policy = "Always"
+}
+
+resource "google_compute_instance" "datasynth" {
+  project      = var.project_id
+  name         = "synth-compute"
+  machine_type = "n1-standard-1"
+  zone         = var.zone
 
   boot_disk {
     initialize_params {
-      image = "ubuntu-1804-bionic-v20210825"
+      image = module.gce-container.source_image
     }
   }
+
   network_interface {
     network = google_compute_network.vpc_network.name
     access_config {
       // Ephemeral public IP
     }
   }
+
   metadata = {
-    aust_pubsub_topic = module.cdr_aust.topic
-    intl_pubsub_topic = module.cdr_intl.topic
-    alarm_pubsub_topic = module.alarm_synth.topic
+    gce-container-declaration = module.gce-container.metadata_value
+    google-logging-enabled    = "true"
+    google-monitoring-enabled = "true"
   }
 
-  # Install Stack Driver, Log Agents & Update
-  metadata_startup_script = <<EOF
-    #! /bin/bash
-    timedatectl set-timezone Australia/Sydney
-    export PROJECT_ID=`curl "http://metadata/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google"`
-    export AUST_PUBSUB_TOPIC=`curl "http://metadata/computeMetadata/v1/instance/attributes/aust_pubsub_topic" -H "Metadata-Flavor: Google"`
-    export INTL_PUBSUB_TOPIC=`curl "http://metadata/computeMetadata/v1/instance/attributes/intl_pubsub_topic" -H "Metadata-Flavor: Google"`
-    export ALARM_PUBSUB_TOPIC=`curl "http://metadata/computeMetadata/v1/instance/attributes/alarm_pubsub_topic" -H "Metadata-Flavor: Google"`
-    curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh
-    bash add-monitoring-agent-repo.sh
-    apt update
-    apt -y install stackdriver-agent
-    service stackdriver-agent start
-    curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh 
-    bash add-logging-agent-repo.sh 
-    apt update 
-    apt -y install google-fluentd google-fluentd-catch-all-config 
-    service google-fluentd start
-    apt -y upgrade
-    apt -y install python3 python3-pip
-    pip3 install google-cloud-pubsub
-    pip3 install scipy
-    echo '${base64decode(google_service_account_key.synth_key.private_key)}' > /key.json
-    export GOOGLE_APPLICATION_CREDENTIALS="/key.json"
-    git clone https://telstra-id-data-synth-gen_bot:${data.google_secret_manager_secret_version.gitlab_token.secret_data}@gitlab.mantelgroup.com.au/kasna/customers/telstra-id/telstra-id-data-synth.git -b main
-    cd telstra-id-data-synth/python
-    python3 ./australian-cdr-generator.py & 
-    python3 ./international-cdr-generator.py &
-    python3 ./alarm-generator.py &
-  EOF
-  depends_on              = [google_project_service.gcp_services, google_compute_network.vpc_network, google_project_iam_policy.compute_sa]
-}
+  labels = {
+    container-vm = module.gce-container.vm_container_label
+  }
 
-data "google_secret_manager_secret_version" "gitlab_token" {
-  project = var.project_id
-  secret  = "GITLAB_TOKEN"
-}
-
-# ----------------------------------------------------------------------------
-# Service Account that is perminted to write to Topic
-# ----------------------------------------------------------------------------
-resource "google_service_account" "synth_sa" {
-  project      = var.project_id
-  account_id   = "synth-sa"
-  display_name = "Service Account to run synthersizers as"
-}
-
-resource "google_service_account_key" "synth_key" {
-  service_account_id = google_service_account.synth_sa.name
-  private_key_type   = "TYPE_GOOGLE_CREDENTIALS_FILE"
-  public_key_type    = "TYPE_X509_PEM_FILE"
+  service_account {
+    email = google_service_account.synth_sa.email
+    scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+  }
 }
 
 # ----------------------------------------------------------------------------
@@ -216,23 +204,24 @@ resource "google_project_service" "gcp_services" {
 # ----------------------------------------------------------------------------
 # IAM
 # ----------------------------------------------------------------------------
-resource "google_project_iam_policy" "compute_sa" {
-  project     = var.project_id
-  policy_data = data.google_iam_policy.compute_sa.policy_data
-}
+module "projects_iam_bindings" {
+  source  = "terraform-google-modules/iam/google//modules/projects_iam"
+  version = "~> 6.4"
 
-data "google_iam_policy" "compute_sa" {
-  binding {
-    role = "roles/compute.admin"
+  projects = [var.project_id]
+  mode     = "authoritative"
 
-    members = [
-      "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com",
-      "serviceAccount:service-${data.google_project.project.number}@compute-system.iam.gserviceaccount.com",
+  bindings = {
+    "roles/storage.admin" = [
+      "serviceAccount:${google_service_account.synth_sa.email}",
     ]
   }
 }
 
-data "google_project" "project" {
-  project_id = var.project_id
+resource "google_service_account" "synth_sa" {
+  project      = var.project_id
+  account_id   = "synth-sa"
+  display_name = "Synth Service Account"
+  description  = "Service Account to run synthersizers as"
 }
 

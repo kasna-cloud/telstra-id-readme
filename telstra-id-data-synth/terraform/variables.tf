@@ -24,5 +24,6 @@ variable "gcp_service_list" {
     "compute.googleapis.com",
     "secretmanager.googleapis.com",
     "pubsub.googleapis.com",
+    "containerregistry.googleapis.com",
   ]
 }

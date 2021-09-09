@@ -4,6 +4,22 @@ This tool will generate synthetic data for call data records (CDR) and alarm dat
 
 There are two generators that run for CDRs and one for alarming data. The are executed on a compute resource in python.
 
+__ Installation __
+
+TL;DR
+
+- Create project <project id>
+- Enable container registry API in project
+- Install docker
+
+```
+# docker build -t datasynth .
+# docker tag datasynth gcr.io/<project id>/datasynth
+# docker push gcr.io/<project id>/datasynth
+# cd terraform
+# terraform apply
+```
+
 __Synthesizers__
 --
 
