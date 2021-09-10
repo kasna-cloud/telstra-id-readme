@@ -37,8 +37,6 @@ component of the system.
 A brief description of each component of this repo is below:
 *
 ## Layout 
-* `airflow` Apache airflow component which can be used to schedule and manage data processing jobs 
-* `dataflow` Transforms and sinks for kafka
 * `notebooks` Jupyter notebooks for data exploration and examples 
 * `sample_app` Sample backend python app which can be deployed to GKE.
 ## Cloud Run Boilerplates
