@@ -60,7 +60,7 @@ to a topic called `celltower_synth`, there is an associated subscription called
 Customer modem health responses are simulated with the data schema below.
 
 | column name | meaning |
----
+| --- | --- |
 | customer_ID | ID of the customer whose modem is online |
 | timestamp  | Timestamp of when modem ping returns |
 | suburb_state | Suburb and State for the address of the customers' premise |
@@ -70,7 +70,7 @@ Customer modem health responses are simulated with the data schema below.
 Service requests for impacted services are simulated using the data schema below.
 
 | column name | meaning |
----
+| --- | --- |
 | customer_ID | ID of the customer that is online |
 | timestamp | Timestamp of when the customer submitted a service request about their internet service being down |
 
