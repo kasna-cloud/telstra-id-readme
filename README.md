@@ -99,8 +99,8 @@ For info regarding the project as well as the data schema see:
 - https://opensea.io/collection/art-blocks-factory
 - https://docs.opensea.io/reference/asset-object
 
-| column name | meaning |
----
+| Column name | Description |
+| --- | --- |
 | token_id | The token ID of the ERC721 asset |
 | image_url | An image for the item |
 | background_color |  The background color to be displayed with the item |
