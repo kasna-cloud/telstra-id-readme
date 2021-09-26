@@ -1,0 +1,67 @@
+steps:
+  - id: create-terraform-state-bucket
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    entrypoint: "bash"
+    waitFor: ["-"]
+    args:
+      - "-c"
+      - |
+        export BRANCH_NAME=${BRANCH_NAME}
+        export PROJECT_ID=${PROJECT_ID}
+        source config.sh
+        gsutil ls gs://$${PROJECT_ID}_$${TERRAFORM_STATE_BUCKET} || gsutil mb -p $${PROJECT_ID} gs://$${PROJECT_ID}_$${TERRAFORM_STATE_BUCKET}
+  - id: git-clone  
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    entrypoint: "bash"
+    waitFor: ["create-terraform-state-bucket"]
+    secretEnv: ['GITLAB_TOKEN']
+    args:
+      - "-c"
+      - |
+        export BRANCH_NAME=${BRANCH_NAME}
+        export PROJECT_ID=${PROJECT_ID}
+        source config.sh
+        mkdir /src
+        git clone https://$${GITLAB_NAME}:$${GITLAB_TOKEN}@$${GITLAB_REPO} -b $${BRANCH_NAME} /src/$${BRANCH_NAME}
+        cd /src/$${BRANCH_NAME}
+        gcloud source repos create $${ANALYSER_REPO}
+        git config credential.helper gcloud.sh
+        git remote add google https://source.developers.google.com/p/$${PROJECT_ID}/r/$${ANALYSER_REPO}
+        git push --all google
+  
+        # Get lastest Commit hash. Needed to force TF to redeploy when code changes in repo.
+        git config --global credential.'https://source.developers.google.com'.helper gcloud.sh
+        echo `git ls-remote https://source.developers.google.com/p/$${PROJECT_ID}/r/$${ANALYSER_REPO} | cut -f1` > /workspace/COMMITHASH
+  - id: terraform-init
+    name: "hashicorp/terraform:latest"
+    entrypoint: "sh"
+    waitFor: ["git-clone"]
+    args:
+      - "-c"
+      - |
+        export BRANCH_NAME=${BRANCH_NAME}
+        export PROJECT_ID=${PROJECT_ID}
+        source config.sh
+        cd terraform
+        sed -i "s/BUCKET/$${PROJECT_ID}_$${TERRAFORM_STATE_BUCKET}/g" backend.tf
+        terraform init
+  - id: terraform-apply
+    name: "hashicorp/terraform:latest"
+    entrypoint: "sh"
+    waitFor: ["terraform-init"]
+    args:
+      - "-c"
+      - |
+        export BRANCH_NAME=${BRANCH_NAME}
+        export PROJECT_ID=${PROJECT_ID}
+        source config.sh
+        export TF_VAR_commithash=`cat /workspace/COMMITHASH`
+        cd artifacts
+        sed -i "s/URL_ADDRESS_HOSTNAME/$${REGION}-$${PROJECT_ID}.cloudfunctions.net\/$${PROJECT_ID}-$${FUNC_API_HANDLER}/g" $${API_YAML}
+        cd ../terraform        
+        sed -i "s/BUCKET/$${PROJECT_ID}_$${TERRAFORM_STATE_BUCKET}/g" backend.tf
+        terraform apply -auto-approve
+availableSecrets:
+  secretManager:
+  - versionName: projects/129265227246/secrets/GITLAB_KEY/versions/1
+    env: GITLAB_TOKEN
