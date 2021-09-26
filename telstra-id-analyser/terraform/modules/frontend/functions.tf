@@ -14,8 +14,7 @@ resource "google_cloudfunctions_function" "api-handler" {
   timeout               = 60
   entry_point           = var.entry_point
   source_repository {
-    #url = "https://source.developers.google.com/projects/${var.project_id}/repos/${var.analyser_repo}/moveable-aliases/${var.branch_name}/paths/python/${var.func_api_handler}"
-    url = "https://source.developers.google.com/projects/${var.project_id}/repos/${var.analyser_repo}/revisions/${var.commithash}/paths/python/api_handler"
+    url = "https://source.developers.google.com/projects/${var.project_id}/repos/${var.analyser_repo}/revisions/${var.commithash}/paths/telstra-id-analyser/python/api_handler"
   }
 
   #lifecycle {

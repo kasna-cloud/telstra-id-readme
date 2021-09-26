@@ -5,7 +5,6 @@
 # Requires: gcloud
 #
 
-
 for i in "gcloud"; do
   command -v "${i}" 2>&1 > /dev/null || { echo >&2 "${i} is not installed."; echo "${MESSAGE}"; exit 1; }
 done
@@ -33,6 +32,12 @@ else
 
   # Set Permissions
   gcloud projects add-iam-policy-binding ${PROJECT_ID} --member serviceAccount:$(gcloud projects describe ${PROJECT_ID} --format 'value(projectNumber)')@cloudbuild.gserviceaccount.com --role roles/owner
+
+  # Push to GSR
+  gcloud source repos create ${ANALYSER_REPO}
+  git config credential.helper gcloud.sh
+  git remote add google https://source.developers.google.com/p/${PROJECT_ID}/r/${ANALYSER_REPO}
+  git push --all google
 
   # Submit Build
   gcloud builds submit --config "cloudbuild.yaml"
