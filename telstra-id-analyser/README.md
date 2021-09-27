@@ -2,8 +2,17 @@
 GCP pipeline to do AI analysis of phone calls and messages.
 
 
-__How to Deploy__
---
+## How to Deploy
+---
+
+TL;DR
+
+1. Create new GCP project.
+1. \# gcloud config set <project_id>
+1. \# ./deploy.sh
+
+
+
 # TELSTRA INNOVATION DATA DATA ANALYSER
 
 This tool will enable AI for call-like resources (call scripts and audios). The system monitors an input Google Cloud Storage (input bucket) and will process the files that are saved.
@@ -25,17 +34,6 @@ This tool will enable AI for call-like resources (call scripts and audios). The 
 ---
 
 ![architecture](resources/starting_point.png)
-
-## How to Deploy
-
----
-
-TL;DR
-
-1. Create new GCP project.
-1. \# gcloud config set <project_id>
-1. \# ./deploy.sh
-
 
 
 ## To Do - Hackathon Activities
