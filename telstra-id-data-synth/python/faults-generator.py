@@ -50,8 +50,9 @@ while True:
     non_outages_prev_online = prev_online[prev_online['suburb_state'].isin(non_outages_suburb_list)]
     non_outages_online_customers = non_outages_prev_online.groupby(['suburb_state'])['customer_id'].apply(lambda group: group.sample(frac=non_outages_samples_per_suburb_dict[group.name])).reset_index().drop('level_1', axis=1)
     
-    # suburbs in an outage
+    # for suburbs in an outage, get customers in those outages
     if outages.sum() > 0:
+        # customer modem dataset
         outages_suburb_list = outages_df[outages_df['outage']==True]['suburb_state'].tolist()
         outages_num_suburbs = len(outages_suburb_list)
         outages_prob_sample_per_suburb = uniform((100-max_drop_anomaly)/100, (100-min_drop_anomaly)/100, size=outages_num_suburbs)
@@ -69,18 +70,23 @@ while True:
         outages_service_requests['timestamp'] = current_time
         output2 = outages_service_requests[['customer_id', 'timestamp', 'suburb_state']]
         
+        if publish:
+            # customer modem data stream
+            payload1 = json.dumps(output1.to_json(orient='records'))
+            future1 = publisher1.publish(topic_path1, payload1.encode("utf-8"))
+            # service requests data stream
+            payload2 = json.dumps(output2.to_json(orient='records'))
+            future2 = publisher2.publish(topic_path2, payload2.encode("utf-8"))
     else:
         # if no outages
         output1 = non_outages_online_customers
         output1['timestamp'] = current_time
+
+        if publish:
+            # customer modem data stream
+            payload1 = json.dumps(output1.to_json(orient='records'))
+            future1 = publisher1.publish(topic_path1, payload1.encode("utf-8"))
     
-    count += 1
     time.sleep(data_freq)
     
-    if publish:
-        # customer modem data stream
-        payload1 = json.dumps(output1.to_json(orient='records'))
-        future1 = publisher1.publish(topic_path1, payload1.encode("utf-8"))
-        # service requests data stream
-        payload2 = json.dumps(output2.to_json(orient='records'))
-        future2 = publisher2.publish(topic_path2, payload2.encode("utf-8"))
+    
