@@ -41,7 +41,6 @@ while True:
     outages = uniform(0, 1, size=num_suburbs) <= prob_outage
     outages_df = pd.DataFrame({'suburb_state': suburb_list, 'outage': outages})
     
-    print('number of outages', outages.sum())    
     # suburbs not in an outage
     non_outages_suburb_list = outages_df[outages_df['outage']==False]['suburb_state'].tolist()
     non_outages_num_suburbs = len(non_outages_suburb_list)
