@@ -18,7 +18,7 @@ prob_outage = 0.0005 # probability of an outage
 data_freq = 1 # seconds per row; minimum that can be set is ~0.10
 publish = True
 
-customer_id_suburbs = pd.read_csv('./customer_id_suburbs.csv')
+customer_id_suburbs = pd.read_csv('./faults_customer_id_suburbs.csv')
 prev_online = customer_id_suburbs
 num_suburbs = customer_id_suburbs['suburb_state'].nunique()
 suburb_list = list(customer_id_suburbs['suburb_state'].unique())

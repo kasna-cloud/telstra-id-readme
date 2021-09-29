@@ -72,7 +72,7 @@ Service requests for impacted services are simulated using the data schema below
 | Column name | Description |
 | --- | --- |
 | customer_ID | ID of the customer that is online |
-| timestamp | Timestamp of when the customer submitted a service request about their internet service being down |
+| timestamp | Timestamp of when the customer was impacted by their internet service being down |
 
 ### Datasets
 
