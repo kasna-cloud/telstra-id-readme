@@ -141,3 +141,9 @@ These are available as a simple one-click deployment for hosting applications on
 Additional information and resources are available at the links below:
 
 - [Howto for JupyterLab Notebooks](https://jupyterlab.readthedocs.io/en/stable/user/notebook.html)
+
+## Additional Resources
+Telstra provides thier own github resource. Which contains many interesting APIs and code examples. 
+https://github.com/telstra/     
+
+Event Detection API is a good example, where and API can be access on Enterprise Mobile phone accounts to access phone events. https://github.com/telstra/Event-Detection-API
