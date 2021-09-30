@@ -61,7 +61,7 @@ Customer modem health responses are simulated with the data schema below.
 
 | Column name | Description |
 | --- | --- |
-| customer_ID | ID of the customer whose modem is online |
+| customer_id | ID of the customer whose modem is online |
 | timestamp  | Timestamp of when modem ping returns |
 | suburb_state | Suburb and State for the address of the customers' premise |
 
@@ -71,8 +71,9 @@ Service requests for impacted services are simulated using the data schema below
 
 | Column name | Description |
 | --- | --- |
-| customer_ID | ID of the customer that is online |
-| timestamp | Timestamp of when the customer submitted a service request about their internet service being down |
+| customer_id | ID of the customer who submitted a service request related to a fault |
+| timestamp | Timestamp of when the customer was impacted by their internet service being down |
+| suburb_state | Suburb and State for the address of the customers' premise |
 
 ### Datasets
 
