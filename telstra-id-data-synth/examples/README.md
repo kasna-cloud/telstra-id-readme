@@ -39,6 +39,8 @@ gcloud alpha pubsub subscriptions pull cdr_aust --auto-ack --limit 100
 gcloud alpha pubsub subscriptions pull cdr_intl --auto-ack --limit 100
 gcloud alpha pubsub subscriptions pull alarm_synth --auto-ack --limit 100
 gcloud alpha pubsub subscriptions pull celltower_synth --auto-ack --limit 100
+gcloud alpha pubsub subscriptions pull faults_service_req --auto-ack --limit 100
+gcloud alpha pubsub subscriptions pull faults_customer_modem_data --auto-ack --limit 100
 ```
 
 NB: There seems to be a bug with this gclud alpha command, sometimes it will show 0 messages received, run the command again and it will fetch the messages correctly.

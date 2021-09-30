@@ -1,2 +1,3 @@
 #!/bin/bash
-python3 ./python/australian-cdr-generator.py & python3 ./python/international-cdr-generator.py & python3 ./python/alarm-generator.py & python3 ./python/celltower-generator.py & python3 ./python/faults-generator.py    
+cd /app/python
+python3 ./australian-cdr-generator.py & python3 ./international-cdr-generator.py & python3 ./alarm-generator.py & python3 ./celltower-generator.py & python3 ./faults-generator.py

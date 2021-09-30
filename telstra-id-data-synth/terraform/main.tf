@@ -261,6 +261,20 @@ resource "google_pubsub_topic_iam_member" "celltower_synth" {
   member     = "serviceAccount:${google_service_account.synth_sa.email}"
   depends_on = [google_project_service.gcp_services]
 }
+resource "google_pubsub_topic_iam_member" "faults_customer_modem_data" {
+  project    = var.project_id
+  topic      = module.faults_customer_modem_data.topic
+  role       = "roles/pubsub.publisher"
+  member     = "serviceAccount:${google_service_account.synth_sa.email}"
+  depends_on = [google_project_service.gcp_services]
+}
+resource "google_pubsub_topic_iam_member" "faults_service_req" {
+  project    = var.project_id
+  topic      = module.faults_service_req.topic
+  role       = "roles/pubsub.publisher"
+  member     = "serviceAccount:${google_service_account.synth_sa.email}"
+  depends_on = [google_project_service.gcp_services]
+}
 
 # ----------------------------------------------------------------------------
 # APIs to enable - Review required APIs in Variables
