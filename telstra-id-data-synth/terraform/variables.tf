@@ -1,5 +1,4 @@
 variable "project_id" {
-  default = "telstra-id-data-synth"
 }
 variable "region" {
   default = "australia-southeast1"
