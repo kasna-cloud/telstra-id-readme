@@ -22,7 +22,7 @@ publish_futures = []
 
 servers = ["ssoneweb001","ssoneweb002","ssoneapp001","ssoneapp002","ssonedb001","ssonedb002","lxonesmtp001","lxonesmtp002","wstsdpapp001","wstsdpapp001","ssessapp001","ssessapp002","ssessapp003","ssessapp004"]
 switches = ["pitt-idc-s01","pitt-idc-s02","pitt-tcom-s01","pitt-tcom-s02","pitt-ess-s01","pitt-ess-s01","exhi-tsdp-s01","exhi-tsdp-s01"]
-routers = ["pit-tcom-r01","pitt-tcom-r02","pitt-idc-r01","pitt-idc-r02","exhi-idc-r01","exhi-idc-r02"]
+routers = ["pitt-tcom-r01","pitt-tcom-r02","pitt-idc-r01","pitt-idc-r02","exhi-idc-r01","exhi-idc-r02"]
 devices = [servers,switches,routers]
 
 # Alert types

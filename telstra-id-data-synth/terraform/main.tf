@@ -27,6 +27,14 @@ module "gce-container" {
       {
         name  = "CELLTOWER_PUBSUB_TOPIC"
         value = module.celltower_synth.topic
+      },
+      {
+        name  = "FAULTS_CUSTOMER_MODEM_DATA_PUBSUB_TOPIC"
+        value = module.faults_customer_modem_data.topic
+      },
+      {
+        name  = "FAULTS_SERVICE_REQUESTS_PUBSUB_TOPIC"
+        value = module.faults_service_req.topic
       }
     ]
   }
@@ -172,6 +180,40 @@ module "celltower_synth" {
   ]
 }
 
+module "faults_customer_modem_data" {
+  source  = "terraform-google-modules/pubsub/google"
+  version = "~> 1.7"
+
+  topic               = "faults_customer_modem_data"
+  project_id          = var.project_id
+  grant_token_creator = false
+
+  pull_subscriptions = [
+    {
+      name                 = "faults_customer_modem_data"
+      dead_letter_topic    = module.dead-letter.id
+      expiration_policy    = ""
+      ack_deadline_seconds = 300
+    }
+  ]
+}
+module "faults_service_req" {
+  source  = "terraform-google-modules/pubsub/google"
+  version = "~> 1.7"
+
+  topic               = "faults_service_req"
+  project_id          = var.project_id
+  grant_token_creator = false
+
+  pull_subscriptions = [
+    {
+      name                 = "faults_service_req"
+      dead_letter_topic    = module.dead-letter.id
+      expiration_policy    = ""
+      ack_deadline_seconds = 300
+    }
+  ]
+}
 module "dead-letter" {
   source  = "terraform-google-modules/pubsub/google"
   version = "~> 1.7"
