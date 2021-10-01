@@ -84,11 +84,12 @@ resource "google_compute_network" "synth_network" {
   auto_create_subnetworks = false
 }
 resource "google_compute_subnetwork" "synth_subnetwork" {
-  project       = var.project_id
-  name          = "synth-subnetwork"
-  ip_cidr_range = "10.152.0.0/24"
-  region        = "australia-southeast1"
-  network       = google_compute_network.synth_network.id
+  project            = var.project_id
+  subnetwork_project = var.project_id
+  name               = "synth-subnetwork"
+  ip_cidr_range      = "10.152.0.0/24"
+  region             = "australia-southeast1"
+  network            = google_compute_network.synth_network.id
 }
 
 # ----------------------------------------------------------------------------
