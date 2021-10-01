@@ -26,6 +26,7 @@ if [[ ! ${REPLY} =~ ^[Yy]$ ]]; then
   [[ "$0" = "${BASH_SOURCE}" ]] && exit 1 || return 1
 else
   # Enable Services
+  gcloud services enable serviceusage.googleapis.com
   gcloud services enable cloudbuild.googleapis.com
   gcloud services enable sourcerepo.googleapis.com
   gcloud services enable cloudresourcemanager.googleapis.com
