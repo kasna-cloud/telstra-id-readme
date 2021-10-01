@@ -79,6 +79,7 @@ variable "gcp_service_list" {
     "cloudbuild.googleapis.com",
     "appengine.googleapis.com",
     "apigateway.googleapis.com",
+    "serviceusage.googleapis.com",
     "servicecontrol.googleapis.com"
   ]
 }
