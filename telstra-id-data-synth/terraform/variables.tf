@@ -24,5 +24,13 @@ variable "gcp_service_list" {
     "secretmanager.googleapis.com",
     "pubsub.googleapis.com",
     "containerregistry.googleapis.com",
+    "sourcerepo.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "appengine.googleapis.com",
+    "apigateway.googleapis.com",
+    "serviceusage.googleapis.com",
+    "apigateway.googleapis.com",
+    "servicecontrol.googleapis.com",
+    "cloudfunctions.googleapis.com"
   ]
 }

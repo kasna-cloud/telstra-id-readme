@@ -74,7 +74,6 @@ variable "gcp_service_list" {
   default = [
     "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com",
-    "secretmanager.googleapis.com",
     "sourcerepo.googleapis.com",
     "cloudbuild.googleapis.com",
     "appengine.googleapis.com",
