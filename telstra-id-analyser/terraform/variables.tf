@@ -80,6 +80,7 @@ variable "gcp_service_list" {
     "appengine.googleapis.com",
     "apigateway.googleapis.com",
     "serviceusage.googleapis.com",
+    "apigateway.googleapis.com",
     "servicecontrol.googleapis.com"
   ]
 }
