@@ -81,6 +81,7 @@ variable "gcp_service_list" {
     "serviceusage.googleapis.com",
     "apigateway.googleapis.com",
     "servicecontrol.googleapis.com",
-    "cloudfunctions.googleapis.com"
+    "cloudfunctions.googleapis.com",
+    "servicemanagement.googleapis.com"
   ]
 }
