@@ -54,7 +54,7 @@ resource "google_compute_instance" "datasynth" {
   }
 
   network_interface {
-    network = google_compute_network.vpc_network.name
+    network = google_compute_network.synth_network.name
   }
 
   metadata = {
@@ -78,10 +78,16 @@ resource "google_compute_instance" "datasynth" {
 # ----------------------------------------------------------------------------
 # Network
 # ----------------------------------------------------------------------------
-resource "google_compute_network" "vpc_network" {
+resource "google_compute_network" "synth_network" {
   project                 = var.project_id
   name                    = var.vpc-network
-  auto_create_subnetworks = true
+  auto_create_subnetworks = false
+}
+resource "google_compute_subnetwork" "synth_network" {
+  name          = "synth-subnetwork"
+  ip_cidr_range = "10.152.0.0/24"
+  region        = "australia-southeast1"
+  network       = google_compute_network.synth_network.id
 }
 
 # ----------------------------------------------------------------------------
@@ -90,7 +96,7 @@ resource "google_compute_network" "vpc_network" {
 resource "google_compute_firewall" "default" {
   project = var.project_id
   name    = "ssh"
-  network = google_compute_network.vpc_network.name
+  network = google_compute_network.synth_network.name
 
   allow {
     protocol = "tcp"

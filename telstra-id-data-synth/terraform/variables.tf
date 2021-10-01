@@ -7,7 +7,7 @@ variable "zone" {
   default = "australia-southeast1-a"
 }
 variable "vpc-network" {
-  default = "vpc-network"
+  default = "synth-network"
 }
 
 
