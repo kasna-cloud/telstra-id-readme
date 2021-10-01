@@ -5,7 +5,7 @@ export TERRAFORM_STATE_BUCKET="terraform-state"
 export DATABASE="analysis_results"
 export ENTRY_POINT="handler"
 export BRANCH_NAME="main"
-export ANALYSER_REPO="telstra-id-analyser"
+export ANALYSER_REPO="$PROJECT_ID-analyser"
 
 # Analyser Constats
 export STT_SUFFIX="_script.txt"

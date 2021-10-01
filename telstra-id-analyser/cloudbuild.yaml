@@ -10,23 +10,23 @@ steps:
         export PROJECT_ID=${PROJECT_ID}
         source config.sh
         gsutil ls gs://$${PROJECT_ID}_$${TERRAFORM_STATE_BUCKET} || gsutil mb -p $${PROJECT_ID} gs://$${PROJECT_ID}_$${TERRAFORM_STATE_BUCKET}
-  #- id: git-hash  
-  #  name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
-  #  entrypoint: "bash"
-  #  waitFor: ["create-terraform-state-bucket"]
-  #  args:
-  #    - "-c"
-  #    - |
-  #      export BRANCH_NAME=${BRANCH_NAME}
-  #      export PROJECT_ID=${PROJECT_ID}
-  #      source config.sh
-  #      # Get lastest Commit hash. Needed to force TF to redeploy when code changes in repo.
-  #      git config --global credential.'https://source.developers.google.com'.helper gcloud.sh
-  #      echo `git ls-remote https://source.developers.google.com/p/$${PROJECT_ID}/r/$${ANALYSER_REPO} | cut -f1` > /workspace/COMMITHASH
+  - id: git-hash  
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    entrypoint: "bash"
+    waitFor: ["create-terraform-state-bucket"]
+    args:
+      - "-c"
+      - |
+        export BRANCH_NAME=${BRANCH_NAME}
+        export PROJECT_ID=${PROJECT_ID}
+        source config.sh
+        # Get lastest Commit hash. Needed to force TF to redeploy when code changes in repo.
+        git config --global credential.'https://source.developers.google.com'.helper gcloud.sh
+        echo `git ls-remote https://source.developers.google.com/p/$${PROJECT_ID}/r/$${ANALYSER_REPO} | cut -f1` > /workspace/COMMITHASH
   - id: terraform-init
     name: "hashicorp/terraform:latest"
     entrypoint: "sh"
-    waitFor: ["create-terraform-state-bucket"]
+    waitFor: ["git-hash"]
     args:
       - "-c"
       - |
@@ -47,7 +47,7 @@ steps:
         export PROJECT_ID=${PROJECT_ID}
         source config.sh
         cd artifacts
-        export TF_VAR_commithash=`cat COMMITHASH`
+        export TF_VAR_commithash=`cat /workspace/COMMITHASH`
         sed -i "s/URL_ADDRESS_HOSTNAME/$${REGION}-$${PROJECT_ID}.cloudfunctions.net\/$${PROJECT_ID}-$${FUNC_API_HANDLER}/g" $${API_YAML}
         cd ../terraform        
         sed -i "s/BUCKET/$${PROJECT_ID}_$${TERRAFORM_STATE_BUCKET}/g" backend.tf

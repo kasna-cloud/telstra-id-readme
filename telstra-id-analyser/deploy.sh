@@ -39,7 +39,6 @@ else
   git config credential.helper gcloud.sh
   git remote add google https://source.developers.google.com/p/${PROJECT_ID}/r/${ANALYSER_REPO}
   git push --all google
-  `git ls-remote https://source.developers.google.com/p/${PROJECT_ID}/r/${ANALYSER_REPO} | cut -f1` > artifacts/COMMITHASH
 
   # Submit Build
   gcloud builds submit --config "cloudbuild.yaml"
