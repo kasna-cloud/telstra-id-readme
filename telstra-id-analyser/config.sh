@@ -2,12 +2,9 @@
 export REGION=${REGION:-"australia-southeast1"}
 export LOCATION="australia-southeast1"
 export TERRAFORM_STATE_BUCKET="terraform-state"
-export FUNCTION_TEMPLATE="function_template.zip"
 export DATABASE="analysis_results"
 export ENTRY_POINT="handler"
 export BRANCH_NAME="main"
-export GITLAB_NAME="gitlab+deploy-token-24"
-export GITLAB_REPO="gitlab.mantelgroup.com.au/kasna/customers/telstra-id/telstra-id-analyser.git"
 export ANALYSER_REPO="telstra-id-analyser"
 
 # Analyser Constats

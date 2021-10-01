@@ -47,4 +47,4 @@ This tool will enable AI for call-like resources (call scripts and audios). The 
     * Create a API to query the information in the DataStore
     * Create a Cloud EndPoint to expose the API to internet
     ![final](resources/final.png)
-
+1. Create a frontend or API gateway for the application. The basic structure for terrafrom is included in this repo, just fill in the gaps!
